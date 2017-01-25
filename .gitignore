@@ -1,0 +1,13 @@
+.DS_Store
+/venv
+*.py[cdo]
+*.swp
+.idea/
+MANIFEST
+build/
+dist/
+docs/_build
+.cache
+.tox/
+.eggs/
+*.egg-info/
