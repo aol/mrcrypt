@@ -43,9 +43,7 @@ inside of the directory:
 
 ::
 
-    git clone ssh://git@stash.ops.aol.com:2022/identity_services/mrcrypt.git
-    cd mrcrypt
-    pip install .
+    pip install mrcrypt
 
 **Note:** mrcrypt uses the Python package
 `Cryptography <https://github.com/pyca/cryptography>`__ which depends on
