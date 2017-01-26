@@ -1,6 +1,18 @@
 mrcrypt: Multi-Region Encryption
 ================================
 
+.. image:: https://img.shields.io/pypi/v/mrcrypt.svg
+    :target: https://pypi.python.org/pypi/mrcrypt
+
+.. image:: https://img.shields.io/pypi/pyversions/mrcrypt.svg
+    :target: https://pypi.python.org/pypi/mrcrypt
+
+.. image:: https://travis-ci.org/aol/mrcrypt.svg?branch=master
+    :target: https://travis-ci.org/aol/mrcrypt
+
+.. image:: https://codecov.io/gh/aol/mrcrypt/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/aol/mrcrypt
+
 mrcrypt is a command-line tool that allows you to encrypt secrets in
 multiple AWS regions using KMS keys using a technique called `Envelope
 Encryption <http://docs.aws.amazon.com/kms/latest/developerguide/workflow.html>`__.
