@@ -11,3 +11,5 @@ docs/_build
 .tox/
 .eggs/
 *.egg-info/
+.coverage
+coverage.xml
