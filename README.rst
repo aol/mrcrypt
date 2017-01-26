@@ -38,8 +38,7 @@ created with mrcrypt are compatible with the AWS Encryption SDK.
 Installation
 ------------
 
-To install mrcrypt simply clone the repo, and run ``pip install .``
-inside of the directory:
+You can install the latest release of mrcrypt with `pip`:
 
 ::
 
