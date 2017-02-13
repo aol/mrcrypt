@@ -62,6 +62,21 @@ You can install the latest release of mrcrypt with `pip`:
 ``pip install .`` fails. For more specific instructions for your OS:
 https://cryptography.io/en/latest/installation/
 
+Quick Start
+-----------
+
+Encrypt a file:
+
+::
+
+    mrcrypt encrypt -r us-east-1 -- alias/master-key secrets.txt
+
+Decrypt the file:
+
+::
+
+    mrcrypt decrypt secrets.txt.encrypted
+
 Usage
 -----
 
