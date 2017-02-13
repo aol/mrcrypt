@@ -169,7 +169,9 @@ Encryption
 **Example:** Encrypt ``secrets.txt`` with the key alias
 ``alias/master-key`` in the regions ``us-east-1`` and ``us-west-2``:
 
-``mrcrypt encrypt -r us-east-1 us-west-2 -- alias/master-key secrets.txt``
+::
+
+    mrcrypt encrypt -r us-east-1 us-west-2 -- alias/master-key secrets.txt
 
 Decryption
 ----------
