@@ -23,6 +23,9 @@ class EncryptCommand(object):
         if os.path.isdir(file_path) and outfile:
             raise ValueError("Cannot specify an outfile for a directory")
 
+        if outfile and os.path.isdir(outfile):
+            raise ValueError("Cannot specify an outfile that is a directory")
+
         self.file_path = file_path
         self.master_key_id = master_key_id
         self.profile = profile
@@ -34,7 +37,9 @@ class EncryptCommand(object):
     def encrypt(self):
         """Handles encryption of both files and directory. If ``self.file_path`` is a directory,
         it recursively encrypts all the files in the directory."""
-        if os.path.isfile(self.file_path):
+        if self.file_path == '-':
+            self._encrypt_stdin()
+        elif os.path.isfile(self.file_path):
             self._encrypt_file(self.file_path)
         elif os.path.isdir(self.file_path):
             for root, subdirs, files in os.walk(self.file_path):
@@ -42,6 +47,24 @@ class EncryptCommand(object):
                     self._encrypt_file(os.path.join(root, filename))
         else:
             raise exceptions.UnsupportedFileObject("{} is not a file".format(self.file_path))
+
+    def _encrypt_stdin(self):
+        """Encrypts the contents of stdin and writes the output."""
+        if self.outfile is None:
+            raise exceptions.OutfileRequired("outfile must be supplied via -o when encrypting stdin")
+
+        parent_dir = utils.get_parent_dir_path(self.outfile)
+        
+        contents = mrcrypt.io.read_plaintext_stdin()
+
+        message = crypto.encrypt_string(contents,
+                                        self.master_key_id,
+                                        self.regions,
+                                        self.profile,
+                                        self.encryption_context)
+
+        mrcrypt.io.write_message(self.outfile, parent_dir, message)
+    
 
     def _encrypt_file(self, filename):
         """Encrypts the contents of ``filename`` and writes the output."""

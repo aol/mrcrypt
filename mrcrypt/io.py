@@ -8,6 +8,7 @@ from __future__ import absolute_import
 import io
 import tempfile
 import os
+import sys
 
 from mrcrypt.message import Message
 from mrcrypt.exceptions import ParseError
@@ -42,6 +43,10 @@ def read_plaintext_file(filename):
 
     return contents
 
+def read_plaintext_stdin():
+    """Reads stdin until EOF and returns it as a string."""
+    contents = sys.stdin.read()
+    return contents
 
 def write_str(filename, directory, content, permissions=None):
     """Writes ``content`` to ``filename`` in ``directory``. The file created has ``permissions``
