@@ -100,6 +100,7 @@ def test_generate_encrypt_filename(infile, outfile, expected):
     encrypt_command = commands.EncryptCommand(infile, None, outfile=outfile)
     assert encrypt_command._generate_outfile(infile) == expected
 
+
 @pytest.mark.parametrize('infile, outfile', (
         ('secrets.txt', '/tmp'),
 ))
@@ -109,6 +110,7 @@ def test_encrypt_outfile_is_dir(infile, outfile):
         assert False
     except ValueError as e:
         assert e.args == ('Cannot specify an outfile that is a directory',)
+
 
 @moto.mock_kms
 def test_cli__encrypt_decrypt_flow(setup_files_tuple, kms_master_key_arn):
@@ -129,6 +131,7 @@ def test_cli__encrypt_decrypt_flow(setup_files_tuple, kms_master_key_arn):
 
     assert stat.S_IRUSR == os.stat(decrypted_file).st_mode & 0777
 
+
 @moto.mock_kms
 def test_cli__encrypt__stdin_decrypt_flow(setup_files_tuple, kms_master_key_arn):
     dummy_secrets_file, encrypted_file, decrypted_file = setup_files_tuple
@@ -145,7 +148,7 @@ def test_cli__encrypt__stdin_decrypt_flow(setup_files_tuple, kms_master_key_arn)
             assert True
 
         encrypt_command = commands.EncryptCommand('-', kms_master_key_arn,
-                                                      outfile=encrypted_file)
+                                                  outfile=encrypted_file)
         encrypt_command.encrypt()
 
         decrypt_command = commands.DecryptCommand(encrypted_file, outfile=decrypted_file)
@@ -155,6 +158,7 @@ def test_cli__encrypt__stdin_decrypt_flow(setup_files_tuple, kms_master_key_arn)
             assert f.read() == SECRET
 
         assert stat.S_IRUSR == os.stat(decrypted_file).st_mode & 0777
+
 
 @moto.mock_kms
 def test_cli__encrypt_decrypt_directory_flow(secrets_dir, kms_master_key_arn):

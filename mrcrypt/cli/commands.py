@@ -54,7 +54,7 @@ class EncryptCommand(object):
             raise exceptions.OutfileRequired("outfile must be supplied via -o when encrypting stdin")
 
         parent_dir = utils.get_parent_dir_path(self.outfile)
-        
+
         contents = mrcrypt.io.read_plaintext_stdin()
 
         message = crypto.encrypt_string(contents,
@@ -64,7 +64,6 @@ class EncryptCommand(object):
                                         self.encryption_context)
 
         mrcrypt.io.write_message(self.outfile, parent_dir, message)
-    
 
     def _encrypt_file(self, filename):
         """Encrypts the contents of ``filename`` and writes the output."""
