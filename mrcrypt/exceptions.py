@@ -24,3 +24,8 @@ class InvalidContentTypeError(Exception):
 class UnsupportedFileObject(Exception):
     """Raised when the file passed into the command line is not a file."""
     pass
+
+
+class OutfileRequired(Exception):
+    """Raised when an outfile must be specified, such as when it cannot be derived from the input file."""
+    pass

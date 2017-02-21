@@ -8,6 +8,7 @@ from __future__ import absolute_import
 import io
 import tempfile
 import os
+import sys
 
 from mrcrypt.message import Message
 from mrcrypt.exceptions import ParseError
@@ -40,6 +41,12 @@ def read_plaintext_file(filename):
     with io.open(filename, 'rb') as infile:
         contents = infile.read()
 
+    return contents
+
+
+def read_plaintext_stdin():
+    """Reads stdin until EOF and returns it as a string."""
+    contents = sys.stdin.read()
     return contents
 
 
