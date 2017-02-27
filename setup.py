@@ -6,7 +6,7 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='mrcrypt',
-    version='1.0.0',
+    version='1.1.0',
     description='A command-line tool that can encrypt/decrypt secrets using envelope encryption '
                 'for use in multiple AWS KMS regions.',
     long_description=readme,
