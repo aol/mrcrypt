@@ -20,35 +20,8 @@ It is intended to be used with the `AWS Encryption SDK for
 Java <https://github.com/awslabs/aws-encryption-sdk-java>`__, but could
 be used on its own.
 
-Compatability with the AWS Encryption SDK
-'''''''''''''''''''''''''''''''''''''''''
-
-**All files encrypted with mrcrypt can be decrypted with the AWS
-Encryption SDK.** But not all files encrypted with the AWS Encryption
-SDK can be decrypted by mrcrypt.
-
-Currently, mrcrypt only supports the AWS Encryption SDK's default (and
-most secure) cryptographic algorithm:
-
--  Content Type: Framed
--  Frame size: 4096
--  Algorithm: ALG\_AES\_256\_GCM\_IV12\_TAG16\_HKDF\_SHA384\_ECDSA\_P384
-
-Support for the remaining algorithms are planned, but files encrypted
-with the AWS Encryption SDK using one of the other algorithms are
-currently not supported in mrcrypt.
-
-Also, the AWS Encryption SDK creates files using elliptic curve point
-compression. Files created with mrcrypt do not use point compression
-because they are not currently supported in
-`Cryptography <https://github.com/pyca/cryptography>`__, a Python
-package mrcrypt uses. The uncompressed points are just as secure as the
-compressed points, but files are a few bytes larger. The AWS Encryption
-SDK can decrypt files that use uncompressed points, meaning all files
-created with mrcrypt are compatible with the AWS Encryption SDK.
-
 Installation
-------------
+============
 
 You can install the latest release of mrcrypt with `pip`:
 
@@ -63,13 +36,13 @@ You can install the latest release of mrcrypt with `pip`:
 https://cryptography.io/en/latest/installation/
 
 Quick Start
------------
+===========
 
-Encrypt a file:
+Encrypt a file for use in 3 regions (NOTE: Key alias must exist in specified regions):
 
 ::
 
-    mrcrypt encrypt -r us-east-1 -- alias/master-key secrets.txt
+    mrcrypt encrypt -r us-east-1 us-west-2 eu-west-1 -- alias/master-key secrets.txt
 
 Decrypt the file:
 
@@ -78,7 +51,7 @@ Decrypt the file:
     mrcrypt decrypt secrets.txt.encrypted
 
 Usage
------
+=====
 
 ::
 
@@ -144,7 +117,7 @@ plaintext output to a file of the same name but without the
 ``.encrypted``.
 
 Encryption
-----------
+==========
 
 ::
 
@@ -173,8 +146,11 @@ Encryption
 
     mrcrypt encrypt -r us-east-1 us-west-2 -- alias/master-key secrets.txt
 
+**Note:** In this example, the key alias `alias/master-key` exists in both the
+`us-east-1`, and `us-west-2` regions.
+
 Decryption
-----------
+==========
 
 ::
 
@@ -198,7 +174,34 @@ Decryption
 contains files that are not encrypted, it will fail.
 
 Testing
-'''''''
+=======
 
 Running tests for mrcrypt is easy if you have ``tox`` installed. Simply
 run ``tox`` at the project's root.
+
+Compatability with the AWS Encryption SDK
+=========================================
+
+**All files encrypted with mrcrypt can be decrypted with the AWS
+Encryption SDK.** But not all files encrypted with the AWS Encryption
+SDK can be decrypted by mrcrypt.
+
+Currently, mrcrypt only supports the AWS Encryption SDK's default (and
+most secure) cryptographic algorithm:
+
+-  Content Type: Framed
+-  Frame size: 4096
+-  Algorithm: ALG\_AES\_256\_GCM\_IV12\_TAG16\_HKDF\_SHA384\_ECDSA\_P384
+
+Support for the remaining algorithms are planned, but files encrypted
+with the AWS Encryption SDK using one of the other algorithms are
+currently not supported in mrcrypt.
+
+Also, the AWS Encryption SDK creates files using elliptic curve point
+compression. Files created with mrcrypt do not use point compression
+because they are not currently supported in
+`Cryptography <https://github.com/pyca/cryptography>`__, a Python
+package mrcrypt uses. The uncompressed points are just as secure as the
+compressed points, but files are a few bytes larger. The AWS Encryption
+SDK can decrypt files that use uncompressed points, meaning all files
+created with mrcrypt are compatible with the AWS Encryption SDK.
