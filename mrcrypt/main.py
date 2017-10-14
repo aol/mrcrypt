@@ -1,6 +1,9 @@
+from mrcrypt.cli import parser
+
+
 def main():
-    from mrcrypt.cli import parser
-    parser.parse()
+    return(parser.parse())
+
 
 if __name__ == '__main__':
     main()
