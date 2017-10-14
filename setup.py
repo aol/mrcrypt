@@ -37,7 +37,6 @@ setup(
     },
 
     install_requires=[
-        'boto3>=0.0.17',
-        'cryptography>=1.1',
+        'aws-encryption-sdk-cli>=1.0'
     ],
 )
