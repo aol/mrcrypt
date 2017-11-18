@@ -37,6 +37,6 @@ setup(
     },
 
     install_requires=[
-        'aws-encryption-sdk-cli>=1.0'
+        'aws-encryption-sdk-cli>=1.1.0'
     ],
 )
