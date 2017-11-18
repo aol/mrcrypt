@@ -162,7 +162,7 @@ def _build_crypto_materials_manager(encryption_cli_args):
     """
     _default_crypto_materials_manager = aws_encryption_sdk_cli.build_crypto_materials_manager_from_args(
         encryption_cli_args.master_keys,
-        caching_config={}  # Force using a Default CMM
+        caching_config=None  # Force using a Default CMM
     )
     return MrcryptLegacyCompatibilityCryptoMaterialsManager(_default_crypto_materials_manager.master_key_provider)
 
@@ -174,30 +174,24 @@ def parse(raw_args=None):
     :returns: parsed arguments
     :rtype: argparse.Namespace
     """
-    mrcrypt_args = parse_args(raw_args)
-
-    if mrcrypt_args.command == 'encrypt':
-        if mrcrypt_args.encryption_context is not None and not isinstance(mrcrypt_args.encryption_context, dict):
-            return 'Invalid dictionary in encryption context argument'
-
-    logging.basicConfig(stream=sys.stderr, level=_get_logging_level(mrcrypt_args.verbose))
-
-    encryption_cli_args = _transform_args(mrcrypt_args)
-    crypto_materials_manager = _build_crypto_materials_manager(encryption_cli_args)
-    stream_args = aws_encryption_sdk_cli.stream_kwargs_from_args(encryption_cli_args, crypto_materials_manager)
-
     try:
+        mrcrypt_args = parse_args(raw_args)
+
+        if mrcrypt_args.command == 'encrypt':
+            if mrcrypt_args.encryption_context is not None and not isinstance(mrcrypt_args.encryption_context, dict):
+                return 'Invalid dictionary in encryption context argument'
+
+        logging.basicConfig(stream=sys.stderr, level=_get_logging_level(mrcrypt_args.verbose))
+
+        encryption_cli_args = _transform_args(mrcrypt_args)
+        crypto_materials_manager = _build_crypto_materials_manager(encryption_cli_args)
+        stream_args = aws_encryption_sdk_cli.stream_kwargs_from_args(encryption_cli_args, crypto_materials_manager)
+
         aws_encryption_sdk_cli.process_cli_request(
             stream_args=stream_args,
-            source=encryption_cli_args.input,
-            destination=encryption_cli_args.output,
-            recursive=encryption_cli_args.recursive,
-            interactive=encryption_cli_args.interactive,
-            no_overwrite=encryption_cli_args.no_overwrite,
-            suffix=encryption_cli_args.suffix,
-            decode_input=encryption_cli_args.decode,
-            encode_output=encryption_cli_args.encode
+            parsed_args=encryption_cli_args
         )
+
         return None
     except AWSEncryptionSDKCLIError as error:
         return error.args[0]
