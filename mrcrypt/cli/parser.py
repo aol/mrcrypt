@@ -144,6 +144,10 @@ def _transform_args(mrcrypt_args):
     else:
         raw_args.append('.')
     raw_args.append('--recursive')
+    raw_args.append('--suppress-metadata')
+
+    if mrcrypt_args.verbose is not None:
+        raw_args.append('-' + 'v' * mrcrypt_args.verbose)
 
     return aws_encryption_sdk_cli.parse_args(raw_args)
 
