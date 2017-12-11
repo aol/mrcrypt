@@ -6,14 +6,17 @@ Legacy compatibility crypto materials manager class to enable reading
 files created with legacy mrcrypt formatting.
 """
 import base64
+import logging
 
-from aws_encryption_sdk.exceptions import NotSupportedError
+from aws_encryption_sdk.exceptions import AWSEncryptionSDKClientError
 from aws_encryption_sdk.internal.defaults import ENCODED_SIGNER_KEY
 from aws_encryption_sdk.materials_managers import DecryptionMaterials
 from aws_encryption_sdk.materials_managers.default import DefaultCryptoMaterialsManager
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicNumbers
+
+_LOGGER = logging.getLogger('mrcrypt')
 
 
 class MrcryptLegacyCompatibilityCryptoMaterialsManager(DefaultCryptoMaterialsManager):
@@ -59,9 +62,15 @@ class MrcryptLegacyCompatibilityCryptoMaterialsManager(DefaultCryptoMaterialsMan
         """
         try:
             return super(MrcryptLegacyCompatibilityCryptoMaterialsManager, self).decrypt_materials(request)
-        except NotSupportedError as error:
-            if error.args[0] != 'Uncompressed points are not supported':
-                raise
+        except (AWSEncryptionSDKClientError, KeyError) as error:
+            _LOGGER.debug(
+                'Encountered error decrypting materials with DefaultCryptoMaterialsManager.'
+                ' Attempting to decrypt using uncompressed elliptic curve point.'
+            )
+            # Once this issue is addressed, KeyError should be removed and the below check and raise uncommented.
+            # https://github.com/awslabs/aws-encryption-sdk-python/issues/21
+            # if error.args[0] != 'Uncompressed points are not supported':
+            #     raise
 
         data_key = self.master_key_provider.decrypt_data_key_from_list(
             encrypted_data_keys=request.encrypted_data_keys,
