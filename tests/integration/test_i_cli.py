@@ -3,6 +3,7 @@
 These could also be converted to unit tests if moto.mock_kms.generate_data_key supported the "number_of_bytes" argument.
 """
 import os
+import platform
 import shlex
 from subprocess import PIPE, Popen
 
@@ -16,6 +17,10 @@ AWS_KMS_KEY_ID = 'AWS_ENCRYPTION_SDK_PYTHON_INTEGRATION_TEST_AWS_KMS_KEY_ID'
 SECRET = b'my secret'
 ENCRYPT_TEMPLATE = '--outfile {outfile} encrypt {arn} {input}'
 DECRYPT_TEMPLATE = '--outfile {outfile} decrypt {input}'
+
+
+def is_windows():
+    return any(platform.win32_ver())
 
 
 @pytest.fixture
@@ -58,9 +63,9 @@ def test_cli__encrypt_decrypt_flow(setup_files_tuple, cmk_arn):
         outfile=str(decrypted_file)
     )
 
-    encrypt_result = parser.parse(shlex.split(encrypt_args))
+    encrypt_result = parser.parse(shlex.split(encrypt_args, posix=not is_windows()))
     assert encrypt_result is None
-    decrypt_result = parser.parse(shlex.split(decrypt_args))
+    decrypt_result = parser.parse(shlex.split(decrypt_args, posix=not is_windows()))
     assert decrypt_result is None
 
     assert decrypted_file.read_binary() == SECRET
@@ -68,7 +73,7 @@ def test_cli__encrypt_decrypt_flow(setup_files_tuple, cmk_arn):
 
 def test_cli__encrypt__stdin_no_output(cmk_arn):
     encrypt_args = 'encrypt {} -'.format(cmk_arn)
-    encrypt_result = parser.parse(shlex.split(encrypt_args))
+    encrypt_result = parser.parse(shlex.split(encrypt_args, posix=not is_windows()))
     assert encrypt_result == 'Destination may not be a directory when source is stdin'
 
 
@@ -85,11 +90,11 @@ def test_cli__encrypt__stdin_decrypt_flow(setup_files_tuple, cmk_arn):
         input=str(encrypted_file)
     )
 
-    proc = Popen(shlex.split(encrypt_args), stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    proc = Popen(shlex.split(encrypt_args, posix=not is_windows()), stdout=PIPE, stdin=PIPE, stderr=PIPE)
     _stdout, stderr = proc.communicate(input=SECRET)
     assert not stderr
 
-    decrypt_results = parser.parse(shlex.split(decrypt_args))
+    decrypt_results = parser.parse(shlex.split(decrypt_args, posix=not is_windows()))
     assert decrypt_results is None
     assert decrypted_file.read_binary() == SECRET
 
@@ -121,12 +126,12 @@ def test_cli__encrypt_decrypt_directory_flow(tmpdir, cmk_arn):
         input=str(ciphertext)
     )
 
-    encrypt_results = parser.parse(shlex.split(encrypt_args))
+    encrypt_results = parser.parse(shlex.split(encrypt_args, posix=not is_windows()))
     assert encrypt_results is None
     assert encrypted_file_one.isfile()
     assert encrypted_file_two.isfile()
 
-    decrypt_results = parser.parse(shlex.split(decrypt_args))
+    decrypt_results = parser.parse(shlex.split(decrypt_args, posix=not is_windows()))
     assert decrypt_results is None
 
     assert decrypted_file_one.read_binary() == SECRET
