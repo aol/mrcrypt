@@ -9,6 +9,8 @@ import pytest
 
 from mrcrypt.materials_manager import MrcryptLegacyCompatibilityCryptoMaterialsManager
 
+pytestmark = [pytest.mark.unit, pytest.mark.local]
+
 KEY_ID = b'arn:aws:kms:us-west-2:658956600833:key/b3537ef1-d8dc-4780-9f5a-55776cbb2f7f'
 PLAINTEXT = b'This is some super secret data!\n'
 Scenario = namedtuple('Scenario', ('data_key', 'ciphertext'))
