@@ -7,12 +7,15 @@ Implements the command-line interface. Is an entry point into the program.
 import argparse
 import ast
 import logging
-import sys
+import os
+import traceback
 
 import aws_encryption_sdk_cli
 from aws_encryption_sdk_cli.exceptions import AWSEncryptionSDKCLIError
 
 from mrcrypt.materials_manager import MrcryptLegacyCompatibilityCryptoMaterialsManager
+
+_LOGGER = logging.getLogger('mrcrypt')
 
 
 def _build_encrypt_parser(subparsers):
@@ -46,8 +49,8 @@ def _build_decrypt_parser(subparsers):
                                      'stdin')
 
 
-def parse_args(args=None):
-    """Builds the parser and parses the command-line arguments."""
+def _build_parser():
+    """Builds the parser."""
     parser = argparse.ArgumentParser(
         description='Multi Region Encryption. A tool for managing secrets across multiple AWS '
                     'regions.')
@@ -62,26 +65,14 @@ def parse_args(args=None):
     _build_encrypt_parser(subparsers)
     _build_decrypt_parser(subparsers)
 
-    return parser.parse_args(args)
-
-
-def _get_logging_level(verbosity_level):
-    """Sets the logger level from the CLI verbosity argument."""
-    if verbosity_level is None:
-        logging_level = logging.WARN
-    elif verbosity_level == 1:
-        logging_level = logging.INFO
-    else:
-        logging_level = logging.DEBUG
-
-    return logging_level
+    return parser
 
 
 def _transform_encryption_context(encryption_context):
-    """Transforms encryption context to raw aws-crypto encryption context arguments.
+    """Transforms encryption context to raw aws-encryption-cli encryption context arguments.
 
     :param dict encryption_context: Encryption context
-    :returns: Raw aws-crypto encryption context arguments
+    :returns: Raw aws-encryption-cli encryption context arguments
     :rtype: list of str
     """
     return ['--encryption-context'] + [
@@ -92,12 +83,12 @@ def _transform_encryption_context(encryption_context):
 
 
 def _transform_master_key_providers(key_id, regions, profile):
-    """Transforms master key provider information to raw aws-crypto arguments.
+    """Transforms master key provider information to raw aws-encryption-cli arguments.
 
     :param str key_id: Key ID to use for all regions
     :param list regions: List of region names (may be empty)
     :param str profile: Named profile to use (may be None)
-    :returns: Raw aws-crypto master key provider configuration arguments
+    :returns: Raw aws-encryption-cli master key provider configuration arguments
     :rtype: list of str
     """
     base_config = ['--master-keys', 'key={}'.format(key_id)]
@@ -114,11 +105,11 @@ def _transform_master_key_providers(key_id, regions, profile):
 
 
 def _transform_args(mrcrypt_args):
-    """Transforms parsed mrcrypt arguments to parsed aws-crypto arguments.
+    """Transforms parsed mrcrypt arguments to parsed aws-encryption-cli arguments.
 
     :param mrcrypt_args: Parsed mrcrypt arguments
     :type: mrcrypt_args: argparse.Namespace
-    :returns: Parsed aws-crypto arguments
+    :returns: Parsed aws-encryption-cli arguments
     :rtype: argparse.Namespace
     """
     raw_args = []
@@ -153,9 +144,9 @@ def _transform_args(mrcrypt_args):
 
 
 def _build_crypto_materials_manager(encryption_cli_args):
-    """Builds a legacy compatible crypto materials manager from parsed aws-crypto arguments.
+    """Builds a legacy compatible crypto materials manager from parsed aws-encryption-cli arguments.
 
-    :param encryption_cli_args: Parsed aws-crypto arguments
+    :param encryption_cli_args: Parsed aws-encryption-cli arguments
     :type encryption_cli_args: argparse.Namespace
     :returns: Legacy compatible crypto materials manager
     :rtype: mrcrypt.materials_manager.MrcryptLegacyCompatibilityCryptoMaterialsManager
@@ -174,14 +165,20 @@ def parse(raw_args=None):
     :returns: parsed arguments
     :rtype: argparse.Namespace
     """
-    try:
-        mrcrypt_args = parse_args(raw_args)
+    parser = _build_parser()
+    mrcrypt_args = parser.parse_args(raw_args)
+    if mrcrypt_args.command is None:
+        return parser.format_help()
 
+    try:
         if mrcrypt_args.command == 'encrypt':
             if mrcrypt_args.encryption_context is not None and not isinstance(mrcrypt_args.encryption_context, dict):
                 return 'Invalid dictionary in encryption context argument'
 
-        logging.basicConfig(stream=sys.stderr, level=_get_logging_level(mrcrypt_args.verbose))
+        aws_encryption_sdk_cli.setup_logger(
+            verbosity=mrcrypt_args.verbose,
+            quiet=False
+        )
 
         encryption_cli_args = _transform_args(mrcrypt_args)
         crypto_materials_manager = _build_crypto_materials_manager(encryption_cli_args)
@@ -196,6 +193,15 @@ def parse(raw_args=None):
     except AWSEncryptionSDKCLIError as error:
         return error.args[0]
     except Exception as error:  # pylint: disable=broad-except
-        message = 'Encountered unexpected {}: increase verbosity to see details'.format(error.__class__.__name__)
-        logging.exception(message)
+        message = os.linesep.join([
+            'Encountered unexpected error: increase verbosity to see details.',
+            '{cls}({args})'.format(
+                cls=error.__class__.__name__,
+                args=', '.join(['"{}"'.format(arg) for arg in error.args])
+            )
+        ])
+        _LOGGER.debug(message)
+        # copy.deepcopy can't handle raw exc_info objects, so format it first
+        formatted_traceback = traceback.format_exc()
+        _LOGGER.debug(formatted_traceback)
         return message
