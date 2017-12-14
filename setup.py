@@ -6,8 +6,8 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='mrcrypt',
-    version='1.1.0',
-    description='A command-line tool that can encrypt/decrypt secrets using envelope encryption '
+    version='1.2.0',
+    description='A command-line tool that can encrypt/decrypt secrets using the AWS Encryption SDK '
                 'for use in multiple AWS KMS regions.',
     long_description=readme,
 
@@ -24,6 +24,10 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Security',
         'Topic :: Security :: Cryptography',
     ],
@@ -37,6 +41,6 @@ setup(
     },
 
     install_requires=[
-        'aws-encryption-sdk-cli>=1.1.0'
+        'aws-encryption-sdk-cli>=1.1.3'
     ],
 )
