@@ -28,6 +28,7 @@ class MrcryptLegacyCompatibilityCryptoMaterialsManager(DefaultCryptoMaterialsMan
     """
 
     def _load_uncompressed_verification_key_from_encryption_context(self, algorithm, encryption_context):
+        # pylint: disable=no-self-use
         """Loads the verification key from an uncompressed elliptic curve point.
 
         :param algorithm: Algorithm for which to generate signing key
