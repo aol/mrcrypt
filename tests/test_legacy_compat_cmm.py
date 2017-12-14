@@ -79,4 +79,4 @@ def test_mrcrypt_legacy_compat_cmm(test_case):
         materials_manager=cmm
     )
     assert PLAINTEXT == plaintext
-    assert ['aws-crypto-public-key'] == list(header.encryption_context.keys())
+    assert ['aws-crypto-public-key'] == list(header.encryption_context.keys())  # noqa=E501 subclasses confuses pylint: disable=no-member

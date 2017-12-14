@@ -2,7 +2,7 @@
 mrcrypt.cli
 ~~~~~~~~~~~
 
-Implements the command-line interface. Is an entry point into the program.
+Implements the command-line interface and transforms arguments into correct arguments to call ``aws-encryption-cli``.
 """
 import argparse
 import ast
@@ -19,7 +19,7 @@ _LOGGER = logging.getLogger('mrcrypt')
 
 
 def _build_encrypt_parser(subparsers):
-    """Builds the encryption subparser."""
+    """Build the encryption subparser."""
     encrypt_parser = subparsers.add_parser('encrypt',
                                            description='Encrypts a file or directory recursively')
 
@@ -39,7 +39,7 @@ def _build_encrypt_parser(subparsers):
 
 
 def _build_decrypt_parser(subparsers):
-    """Builds the decryption subparser."""
+    """Build the decryption subparser."""
     decrypt_parser = subparsers.add_parser('decrypt',
                                            description='Decrypts a file')
 
@@ -50,7 +50,7 @@ def _build_decrypt_parser(subparsers):
 
 
 def _build_parser():
-    """Builds the parser."""
+    """Build the parser."""
     parser = argparse.ArgumentParser(
         description='Multi Region Encryption. A tool for managing secrets across multiple AWS '
                     'regions.')
@@ -69,7 +69,7 @@ def _build_parser():
 
 
 def _transform_encryption_context(encryption_context):
-    """Transforms encryption context to raw aws-encryption-cli encryption context arguments.
+    """Transform encryption context to raw aws-encryption-cli encryption context arguments.
 
     :param dict encryption_context: Encryption context
     :returns: Raw aws-encryption-cli encryption context arguments
@@ -83,7 +83,7 @@ def _transform_encryption_context(encryption_context):
 
 
 def _transform_master_key_providers(key_id, regions, profile):
-    """Transforms master key provider information to raw aws-encryption-cli arguments.
+    """Transform master key provider information to raw aws-encryption-cli arguments.
 
     :param str key_id: Key ID to use for all regions
     :param list regions: List of region names (may be empty)
@@ -105,7 +105,7 @@ def _transform_master_key_providers(key_id, regions, profile):
 
 
 def _transform_args(mrcrypt_args):
-    """Transforms parsed mrcrypt arguments to parsed aws-encryption-cli arguments.
+    """Transform parsed mrcrypt arguments to parsed aws-encryption-cli arguments.
 
     :param mrcrypt_args: Parsed mrcrypt arguments
     :type: mrcrypt_args: argparse.Namespace
@@ -144,7 +144,7 @@ def _transform_args(mrcrypt_args):
 
 
 def _build_crypto_materials_manager(encryption_cli_args):
-    """Builds a legacy compatible crypto materials manager from parsed aws-encryption-cli arguments.
+    """Build a legacy compatible crypto materials manager from parsed aws-encryption-cli arguments.
 
     :param encryption_cli_args: Parsed aws-encryption-cli arguments
     :type encryption_cli_args: argparse.Namespace
@@ -159,7 +159,7 @@ def _build_crypto_materials_manager(encryption_cli_args):
 
 
 def parse(raw_args=None):
-    """Processes input arguments and runs requested operations.
+    """Process input arguments and runs requested operations.
 
     :param list raw_args: List of arguments
     :returns: parsed arguments

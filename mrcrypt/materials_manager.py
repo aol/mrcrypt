@@ -63,7 +63,7 @@ class MrcryptLegacyCompatibilityCryptoMaterialsManager(DefaultCryptoMaterialsMan
         """
         try:
             return super(MrcryptLegacyCompatibilityCryptoMaterialsManager, self).decrypt_materials(request)
-        except (AWSEncryptionSDKClientError, KeyError) as error:
+        except (AWSEncryptionSDKClientError, KeyError):
             _LOGGER.debug(
                 'Encountered error decrypting materials with DefaultCryptoMaterialsManager.'
                 ' Attempting to decrypt using uncompressed elliptic curve point.'
@@ -73,7 +73,7 @@ class MrcryptLegacyCompatibilityCryptoMaterialsManager(DefaultCryptoMaterialsMan
             # if error.args[0] != 'Uncompressed points are not supported':
             #     raise
 
-        data_key = self.master_key_provider.decrypt_data_key_from_list(
+        data_key = self.master_key_provider.decrypt_data_key_from_list(  # subclasses confuses pylint: disable=no-member
             encrypted_data_keys=request.encrypted_data_keys,
             algorithm=request.algorithm,
             encryption_context=request.encryption_context

@@ -1,4 +1,4 @@
-""""""
+"""Unit tests to validate the behavior of the ``mrcrypt.cli.parser`` module."""
 import shlex
 
 import aws_encryption_sdk_cli
@@ -73,7 +73,7 @@ def test_aws_encryption_cli_args_transform(mrcrypt_args, expected_aws_encryption
 ))
 def test_invalid_encryption_context(value):
     test = parser.parse(shlex.split('encrypt --encryption_context \'{}\' key_id input_filename'.format(value)))
-    assert 'Invalid dictionary in encryption context argument' == test
+    assert test == 'Invalid dictionary in encryption context argument'
 
 
 @pytest.mark.skipif(

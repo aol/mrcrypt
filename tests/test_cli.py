@@ -1,4 +1,4 @@
-""""""
+"""Unit tests to verify construction of the mrcrypt argument parser."""
 import pytest
 
 from mrcrypt.cli import parser
