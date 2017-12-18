@@ -116,11 +116,9 @@ argument.
 
 ``# Encrypt 'file.txt' writing the output into 'encrypted-file.txt'  mrcrypt -o encrypted-file.txt encrypt alias/master-key file.txt``
 
-By default, when encrypting, mrcrypt will create a file with the same
-file name as the input file with ``.encrypted`` appended to the end.
-When decrypting, if the file ends with ``.encrypted`` it will write the
-plaintext output to a file of the same name but without the
-``.encrypted``.
+When an  output filename is not specified, mrcrypt will use the input
+filename as a base and add a suffix. On encrypt this suffix is ``.encrypted``
+and on decrypt this suffix is ``.decrypted``.
 
 Encryption
 ==========

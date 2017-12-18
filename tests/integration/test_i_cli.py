@@ -99,8 +99,6 @@ def test_cli__encrypt__stdin_decrypt_flow(setup_files_tuple, cmk_arn):
     assert decrypted_file.read_binary() == SECRET
 
 
-# Leaving this marked to fail pending PR discussion.
-@pytest.mark.xfail(strict=True)
 def test_cli__encrypt_decrypt_directory_flow(tmpdir, cmk_arn):
     plaintext = tmpdir.mkdir('plaintext')
     ciphertext = tmpdir.mkdir('ciphertext')
@@ -109,12 +107,12 @@ def test_cli__encrypt_decrypt_directory_flow(tmpdir, cmk_arn):
     secrets_file_one = plaintext.join('secrets-1.txt')
     secrets_file_one.write_binary(SECRET)
     encrypted_file_one = ciphertext.join('secrets-1.txt.encrypted')
-    decrypted_file_one = decrypted.join('secrets-1.txt')
+    decrypted_file_one = decrypted.join('secrets-1.txt.encrypted.decrypted')
 
     secrets_file_two = plaintext.join('secrets-2.txt')
     secrets_file_two.write_binary(SECRET)
     encrypted_file_two = ciphertext.join('secrets-2.txt.encrypted')
-    decrypted_file_two = decrypted.join('secrets-2.txt')
+    decrypted_file_two = decrypted.join('secrets-2.txt.encrypted.decrypted')
 
     encrypt_args = ENCRYPT_TEMPLATE.format(
         outfile=str(ciphertext),
