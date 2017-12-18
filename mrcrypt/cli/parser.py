@@ -189,6 +189,11 @@ def parse(raw_args=None):
             parsed_args=encryption_cli_args
         )
 
+        # NOTE: If any post-processing of the files created as a result of this operation
+        # is desired, the best way to approach this would be to use the output metadata to
+        # collect a listing of all written files.
+        # http://aws-encryption-sdk-cli.readthedocs.io/en/latest/#output-metadata
+
         return None
     except AWSEncryptionSDKCLIError as error:
         return error.args[0]
