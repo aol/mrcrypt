@@ -2,6 +2,6 @@ language: python
 python:
   - "2.7"
 install: "pip install tox-travis"
-script: tox -- -v
+script: tox -e py27-local -- -v
 after_success:
   - bash <(curl -s https://codecov.io/bash)
