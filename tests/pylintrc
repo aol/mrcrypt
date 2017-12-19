@@ -1,0 +1,15 @@
+[MESSAGES CONTROL]
+# Disabling messages that we either don't care about
+# for tests or are necessary to break for tests.
+#
+# C0103 : invalid-name (we prefer long, descriptive, names for tests)
+# C0111 : missing-docstring (we don't write docstrings for tests)
+# W0212 : protected-access (raised when calling _ methods)
+# W0621 : redefined-outer-name (raised when using pytest fixtures)
+disable = C0103, C0111, W0212, W0621
+
+[FORMAT]
+max-line-length = 120
+
+[REPORTS]
+msg-template = {path}:{line}: [{msg_id}({symbol}), {obj}] {msg}
