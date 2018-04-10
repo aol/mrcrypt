@@ -71,6 +71,9 @@ class MrcryptLegacyCompatibilityCryptoMaterialsManager(DefaultCryptoMaterialsMan
             # Once this issue is addressed, the caught exception classes should be narrowed appropriately:
             # https://github.com/awslabs/aws-encryption-sdk-python/issues/21
 
+            _LOGGER.warning("This file is encrypted using an uncompressed key, which may lead to compatibility issues "
+                            "with the AWS Encryption SDK.")
+
         data_key = self.master_key_provider.decrypt_data_key_from_list(  # subclasses confuse pylint: disable=no-member
             encrypted_data_keys=request.encrypted_data_keys,
             algorithm=request.algorithm,
