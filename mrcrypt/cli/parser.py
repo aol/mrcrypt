@@ -175,6 +175,11 @@ def parse(raw_args=None):
             if mrcrypt_args.encryption_context is not None and not isinstance(mrcrypt_args.encryption_context, dict):
                 return 'Invalid dictionary in encryption context argument'
 
+        # setup mrcrypt's logger
+        log_level = logging.WARN if not mrcrypt_args.verbose else logging.DEBUG
+        _LOGGER.setLevel(log_level)
+
+        # setup aws_encryption_sdk's logger
         aws_encryption_sdk_cli.setup_logger(
             verbosity=mrcrypt_args.verbose,
             quiet=False
