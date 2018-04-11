@@ -34,8 +34,7 @@ def _build_encrypt_parser(subparsers):
 
     encrypt_parser.add_argument('filename',
                                 action='store',
-                                help='The file or directory to encrypt. Use a - to read from '
-                                     'stdin')
+                                help='The file or directory to encrypt. Use "-" to read from stdin')
 
 
 def _build_decrypt_parser(subparsers):
@@ -45,8 +44,7 @@ def _build_decrypt_parser(subparsers):
 
     decrypt_parser.add_argument('filename',
                                 action='store',
-                                help='The file or directory to decrypt. Use a - to read from '
-                                     'stdin')
+                                help='The file or directory to decrypt. Use "-" to read from stdin')
 
 
 def _build_parser():
@@ -56,9 +54,11 @@ def _build_parser():
                     'regions.')
 
     parser.add_argument('-p', '--profile', action='store', help='The profile to use')
-    parser.add_argument('-v', '--verbose', action='count', help='More verbose output (ignored if --quiet)')
+    parser.add_argument('-v', '--verbose', action='count',
+                        help='More verbose output (ignored if --quiet)')
     parser.add_argument('-q', '--quiet', action='store_true', help='Quiet all output')
-    parser.add_argument('-o', '--outfile', action='store', help='The file to write the results to')
+    parser.add_argument('-o', '--outfile', action='store',
+                        help='The file to write the results to (use "-" to write to stdout')
 
     subparsers = parser.add_subparsers(dest='command')
 
