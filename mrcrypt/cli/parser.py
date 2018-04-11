@@ -34,8 +34,7 @@ def _build_encrypt_parser(subparsers):
 
     encrypt_parser.add_argument('filename',
                                 action='store',
-                                help='The file or directory to encrypt. Use a - to read from '
-                                     'stdin')
+                                help='The file or directory to encrypt. Use "-" to read from stdin')
 
 
 def _build_decrypt_parser(subparsers):
@@ -45,8 +44,7 @@ def _build_decrypt_parser(subparsers):
 
     decrypt_parser.add_argument('filename',
                                 action='store',
-                                help='The file or directory to decrypt. Use a - to read from '
-                                     'stdin')
+                                help='The file or directory to decrypt. Use "-" to read from stdin')
 
 
 def _build_parser():
@@ -57,8 +55,10 @@ def _build_parser():
 
     parser.add_argument('-p', '--profile', action='store', help='The profile to use')
     parser.add_argument('-v', '--verbose', action='count',
-                        help='More verbose output')
-    parser.add_argument('-o', '--outfile', action='store', help='The file to write the results to')
+                        help='More verbose output (ignored if --quiet)')
+    parser.add_argument('-q', '--quiet', action='store_true', help='Quiet all output')
+    parser.add_argument('-o', '--outfile', action='store',
+                        help='The file to write the results to (use "-" to write to stdout')
 
     subparsers = parser.add_subparsers(dest='command')
 
@@ -175,9 +175,18 @@ def parse(raw_args=None):
             if mrcrypt_args.encryption_context is not None and not isinstance(mrcrypt_args.encryption_context, dict):
                 return 'Invalid dictionary in encryption context argument'
 
+        # setup mrcrypt's logger
+        if mrcrypt_args.quiet:
+            log_level = logging.CRITICAL
+        else:
+            log_level = logging.WARN if not mrcrypt_args.verbose else logging.DEBUG
+
+        _LOGGER.setLevel(log_level)
+
+        # setup aws_encryption_sdk's logger
         aws_encryption_sdk_cli.setup_logger(
             verbosity=mrcrypt_args.verbose,
-            quiet=False
+            quiet=mrcrypt_args.quiet
         )
 
         encryption_cli_args = _transform_args(mrcrypt_args)

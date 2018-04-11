@@ -6,7 +6,7 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='mrcrypt',
-    version='1.2.0',
+    version='2.0.0',
     description='A command-line tool that can encrypt/decrypt secrets using the AWS Encryption SDK '
                 'for use in multiple AWS KMS regions.',
     long_description=readme,
@@ -22,6 +22,8 @@ setup(
         'Intended Audience :: System Administrators',
         'Natural Language :: English',
         'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
