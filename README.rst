@@ -16,7 +16,7 @@ mrcrypt: Multi-Region Encryption
 mrcrypt is a command-line tool which encrypts secrets that conform to the AWS
 Encryption SDK's `message format
 <http://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/message-format.html>`__
-for envelope encryption. As of v2.0, mrcrypt now wraps the `aws-encryption-sdk-cli <https://github.com/awslabs/aws-encryption-sdk-cli>`__.
+for envelope encryption. As of v2.0.0, mrcrypt now wraps the `aws-encryption-sdk-cli <https://github.com/awslabs/aws-encryption-sdk-cli>`__.
 
 For more information about the AWS Encryption SDK see
 `<https://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/introduction.html>`__.
@@ -185,15 +185,15 @@ If you have an AWS account with a KMS key, you can run the integration tests usi
 
     AWS_ENCRYPTION_SDK_PYTHON_INTEGRATION_TEST_AWS_KMS_KEY_ID=<my-key-arn> tox -e py{27,34,35,36}-{local,integ}
 
-Note about files created with mrcrypt before v2.0
-=================================================
+Note about files created with mrcrypt before v2.0.0
+===================================================
 
-Upon the release of v2.0, mrcrypt started wrapping the
+Upon the release of v2.0.0, mrcrypt started wrapping the
 `aws-encryption-sdk-cli <https://github.com/awslabs/aws-encryption-sdk-cli>`__. Wrapping the
 aws-encryption-sdk-cli means that mrcrypt now fully conforms to the AWS
 Encryption SDK's `message format
 <http://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/message-format.html>`__ and uses
-compressed points when encrypting files. Before v2.0, mrcrypt did not use compressed points, and
+compressed points when encrypting files. Before v2.0.0, mrcrypt did not use compressed points, and
 while still secure, it lead to compatibility issues with other AWS Encryption SDK implementations.
 To update your pre-2.0 mrcrypt encrypted files, and improve compatibility with the AWS Encryption
 SDK, simply decrypt and re-encrypt your file with the latest version of mrcrypt.
